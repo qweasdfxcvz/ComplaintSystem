@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Assignment>
+@{
+    ViewData["Title"] = "الشكاوي المنتهية";
+    Layout = "~/Areas/Communicator/Views/Shared/CommunicatorLayout.cshtml";
+}
+
+<h2 class="mb-4">الشكاوى المنتهية</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        لا توجد شكاوى منتهية حالياً.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>رقم الشكوى</th>
+                    <th>اسم المواطن</th>
+                    <th>نوع الشكوى</th>
+                    <th>تاريخ التحويل</th>
+                    <th>الحالة</th>
+                    <th>ملاحظات التحويل</th>
+                    <th>التحويل من</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Complaint.ComplaintNumber</td>
+                        <td>@item.Complaint.CitizenName</td>
+                        <td>@item.Complaint.ComplaintType?.Name</td>
+                        <td>@item.AssignedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                        <td><span class="badge bg-warning text-dark">@item.Complaint.Status?.Name</span></td>
+                        <td>@item.Notes</td>
+                        <td>@item.FromUser?.Name</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ComplaintId" class="btn btn-sm btn-primary">تفاصيل</a>
+                            <button class="btn btn-outline-danger" onclick="closeComplaint(@item.ComplaintId)">إغلاق المعاملة</button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function closeComplaint(id) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم إغلاق المعاملة بشكل نهائي!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، إغلاق',
+                cancelButtonText: 'إلغاء',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Communicator/Complaints/Close/${id}`, {
+                        method: 'POST'
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'تم الإغلاق',
+                                text: 'تم تغيير حالة المعاملة إلى مغلقة.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                const redirectUrl = '@Url.Action("Create", "Messages", new { area = "Communicator" })/' + id;
+                                window.location.href = redirectUrl;
+                            });
+                        } else {
+                            Swal.fire('خطأ!', 'حدث خطأ أثناء إغلاق المعاملة.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

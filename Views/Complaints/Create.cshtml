@@ -1,0 +1,90 @@
+﻿@model ComplaintSystem.Models.Complaint
+@{
+    ViewData["Title"] = "تقديم شكوى";
+    var complaintNumber = TempData["ComplaintNumber"] as string;
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-success">
+            <i class="bi bi-send-check"></i> تقديم شكوى جديدة
+        </h2>
+        <p class="text-muted">يرجى تعبئة النموذج التالي بدقة لنتمكن من مساعدتك بشكل أفضل</p>
+    </div>
+
+    <div class="card shadow-sm border-0 col-md-10 mx-auto">
+        <div class="card-body">
+            <form asp-action="Create" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="CitizenName" class="form-label">الاسم الثلاثي</label>
+                    <input asp-for="CitizenName" class="form-control" />
+                    <span asp-validation-for="CitizenName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="NationalId" class="form-label">الرقم الوطني</label>
+                    <input asp-for="NationalId" class="form-control" />
+                    <span asp-validation-for="NationalId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label">رقم الموبايل</label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="TransactionNo" class="form-label">رقم المعاملة</label>
+                    <input asp-for="TransactionNo" class="form-control" />
+                    <span asp-validation-for="TransactionNo" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ComplaintTypeId" class="form-label">نوع الشكوى</label>
+                    <select asp-for="ComplaintTypeId" class="form-select" asp-items="ViewBag.ComplaintTypeId">
+                        <option value="">-- اختر نوع الشكوى --</option>
+                    </select>
+                    <span asp-validation-for="ComplaintTypeId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">توصيف الشكوى</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="يرجى كتابة تفاصيل الشكوى بشكل واضح ودقيق..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-success px-4 py-2">
+                        <i class="bi bi-send-fill"></i> إرسال الشكوى
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        @if (!string.IsNullOrEmpty(complaintNumber))
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم إرسال الشكوى بنجاح!',
+                        html: 'رقم الشكوى الخاص بك هو:<br><strong>@complaintNumber</strong>',
+                        confirmButtonText: 'حسناً'
+                    });
+            </text>
+        }
+    </script>
+}

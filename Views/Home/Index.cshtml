@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "الرئيسية";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5 text-center">
+    <div class="mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            مرحباً بك في بوابة الشكاوى الإلكترونية
+        </h1>
+        <p class="lead mt-3">
+            نحن هنا لنُصغي إليك ونُتابع شكواك بعناية. هدفنا هو تعزيز الشفافية وتحسين جودة الخدمة.
+        </p>
+    </div>
+
+    <div class="row justify-content-center gap-4">
+        <div class="col-md-4">
+            <a asp-controller="Complaints" asp-action="Create" class="btn btn-success btn-lg w-100 shadow-sm">
+                <i class="bi bi-pencil-square"></i> تقديم شكوى جديدة
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Complaints" asp-action="Search" class="btn btn-outline-primary btn-lg w-100 shadow-sm">
+                <i class="bi bi-search"></i> البحث عن شكوى
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+﻿@model ComplaintSystem.Models.Complaint
+
+@{
+    Layout = "~/Areas/Specialist/Views/Shared/SpecialistLayout.cshtml";
+    ViewData["Title"] = "تفاصيل الشكوى";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet" />
+}
+
+<div class="container mt-4">
+
+    <!-- بطاقة تفاصيل الشكوى -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">تفاصيل الشكوى</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>رقم الشكوى:</strong> @Model.ComplaintNumber</p>
+            <p><strong>الاسم:</strong> @Model.CitizenName</p>
+            <p><strong>الرقم الوطني:</strong> @Model.NationalId</p>
+            <p><strong>الهاتف:</strong> @Model.Phone</p>
+            <p><strong>البريد الإلكتروني:</strong> @Model.Email</p>
+            <p><strong>رقم المعاملة:</strong> @Model.TransactionNo</p>
+            <p><strong>نوع الشكوى:</strong> @Model.ComplaintType?.Name</p>
+            <p><strong>الوصف:</strong> @Model.Description</p>
+            <p><strong>الحالة:</strong> @Model.Status?.Name</p>
+            <p><strong>تاريخ الإرسال:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+        </div>
+    </div>
+
+    <!-- أزرار الإجراءات -->
+    <div class="d-flex justify-content-between mb-4">
+        <button class="btn btn-outline-success" onclick="endComplaint(@Model.ComplaintId)">إنهاء الشكوى</button>
+        <a class="btn btn-outline-primary" asp-action="Reassign" asp-route-id="@Model.ComplaintId">تحويل الشكوى</a>
+    </div>
+
+    <!-- سجل التحويلات بتصميم Timeline -->
+    <h5 class="text-muted mb-4">سجل التحويلات (الخط الزمني)</h5>
+
+    @if (Model.Assignments?.Any() == true)
+    {
+        <div class="timeline position-relative ps-4 border-start border-2 border-primary">
+            @foreach (var assign in Model.Assignments.OrderBy(a => a.AssignedAt))
+            {
+                <div class="timeline-item position-relative mb-5">
+                    <div class="timeline-dot bg-primary position-absolute top-0 start-0 translate-middle rounded-circle border border-white" style="width: 1.2rem; height: 1.2rem;"></div>
+                    <div class="card shadow-sm ms-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-2">
+                                من <strong>@assign.FromUser?.Name</strong> إلى <strong>@assign.ToUser?.Name</strong>
+                            </h6>
+                            <p class="mb-1"><i class="bi bi-clock"></i> @assign.AssignedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                            <p class="mb-0"><strong>ملاحظات:</strong> @assign.Notes</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">لا يوجد تحويلات حتى الآن.</div>
+    }
+
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+        function endComplaint(complaintId) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم إنهاء الشكوى وتحديث حالتها إلى 'منتهية'.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم، إنهاء',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Specialist/Assignments/End/${complaintId}`, {
+                        method: 'POST'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire('تم!', 'تم إنهاء الشكوى بنجاح.', 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('خطأ!', 'حدث خطأ أثناء إنهاء الشكوى.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

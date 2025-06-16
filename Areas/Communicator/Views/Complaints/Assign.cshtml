@@ -1,0 +1,44 @@
+﻿@model ComplaintSystem.Models.Complaint
+
+@{
+    ViewData["Title"] = "تحويل الشكوى";
+    Layout = "~/Areas/Communicator/Views/Shared/CommunicatorLayout.cshtml";
+    var specialists = ViewBag.Specialists as List<ComplaintSystem.Models.User>;
+}
+
+<h2 class="mb-4">تحويل الشكوى إلى مختص</h2>
+
+<div class="card shadow-sm p-4">
+    <form asp-action="Assign" method="post">
+        <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
+
+        <div class="mb-3">
+            <label class="form-label">رقم الشكوى</label>
+            <input class="form-control" value="@Model.ComplaintNumber" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">اسم المواطن</label>
+            <input class="form-control" value="@Model.CitizenName" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">اختر الموظف المختص</label>
+            <select name="specialistId" class="form-select" required>
+                <option value="">-- اختر موظفاً --</option>
+                @foreach (var user in specialists)
+                {
+                    <option value="@user.UserId">@user.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">ملاحظات</label>
+            <textarea name="notes" class="form-control" rows="3" placeholder="أدخل ملاحظات التحويل (اختياري)"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">تحويل الشكوى</button>
+        <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>

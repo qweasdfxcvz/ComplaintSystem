@@ -1,0 +1,106 @@
+﻿@model ComplaintSystem.ViewModels.ComplaintDetailsViewModel
+@{
+    ViewData["Title"] = "تفاصيل الشكوى";
+    Layout = "~/Areas/Communicator/Views/Shared/CommunicatorLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    تفاصيل الشكوى
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">رقم الشكوى: @Model.Complaint.ComplaintNumber</h5>
+                    <p><strong>الاسم:</strong> @Model.Complaint.CitizenName</p>
+                    <p><strong>الرقم الوطني:</strong> @Model.Complaint.NationalId</p>
+                    <p><strong>رقم المعاملة:</strong> @Model.Complaint.TransactionNo</p>
+                    <p><strong>البريد الإلكتروني:</strong> @Model.Complaint.Email</p>
+                    <p><strong>الهاتف:</strong> @Model.Complaint.Phone</p>
+                    <p><strong>نوع الشكوى:</strong> @Model.Complaint.ComplaintType?.Name</p>
+                    <p><strong>الحالة:</strong> @Model.Complaint.Status?.Name</p>
+                    <p><strong>الوصف:</strong> @Model.Complaint.Description</p>
+                    <p><strong>تاريخ الإنشاء:</strong> @Model.Complaint.CreatedAt.ToString("yyyy/MM/dd HH:mm")</p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mb-4">
+                <a class="btn btn-outline-primary" asp-action="Assign" asp-route-id="@Model.Complaint.ComplaintId">تحويل الشكوى</a>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    الردود السابقة
+                </div>
+                <div class="card-body">
+                    @if (Model.Replies.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var reply in Model.Replies)
+                            {
+                                <li class="list-group-item">
+                                    <p class="mb-1">@reply.Message</p>
+                                    <small class="text-muted">بتاريخ: @reply.SentAt.ToString("yyyy/MM/dd HH:mm")</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">لا يوجد ردود بعد.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    إضافة رد جديد
+                </div>
+                <div class="card-body">
+                    <form asp-action="Details" asp-route-id="@Model.Complaint.ComplaintId" method="post">
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="NewReply" class="form-control" style="height: 150px;"></textarea>
+                            <label asp-for="NewReply">نص الرد</label>
+                            <span asp-validation-for="NewReply" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-success">إرسال الرد</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // إشعار النجاح أو الخطأ
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم',
+                        text: 'تم إضافة الرد بنجاح.',
+                        confirmButtonText: 'حسنًا'
+                    });
+            </text>
+        }
+        else if (TempData["Error"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                            text: 'حدث خطأ أثناء حفظ الرد، يرجى المحاولة لاحقًا.',
+                        confirmButtonText: 'موافق'
+                    });
+            </text>
+        }
+    </script>
+}

@@ -1,0 +1,85 @@
+﻿@model ComplaintSystem.ViewModels.ReassignComplaintViewModel
+@{
+    Layout = "~/Areas/Specialist/Views/Shared/SpecialistLayout.cshtml";
+    ViewData["Title"] = "إعادة تحويل الشكوى";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet" />
+}
+
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">إعادة تحويل الشكوى رقم @Model.ComplaintNumber</h5>
+        </div>
+        <div class="card-body">
+
+            <form asp-action="Reassign" method="post">
+                <input type="hidden" asp-for="ComplaintId" />
+
+                <div class="mb-3">
+                    <label class="form-label">الموظف المختص الجديد</label>
+                    <select asp-for="ToUserId" class="form-select" asp-items="Model.Specialists">
+                        <option value="">-- اختر موظف مختص --</option>
+                    </select>
+                    <span asp-validation-for="ToUserId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">تغيير حالة الشكوى (اختياري)</label>
+                    <select name="selectedStatusId" class="form-select">
+                        <option value="">-- لا تغيير --</option>
+                        @foreach (var status in Model.AvailableStatuses)
+                        {
+                            <option value="@status.Value" selected="@(status.Value == Model.SelectedStatusId?.ToString() ? "selected" : null)">
+                                @status.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">ملاحظات التحويل</label>
+                    <textarea asp-for="Notes" class="form-control" rows="4" placeholder="اكتب أي ملاحظات هنا..."></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success">تحويل الشكوى</button>
+                <a asp-action="Details" asp-route-id="@Model.ComplaintId" class="btn btn-secondary">إلغاء</a>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم التحويل!',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonText: 'حسناً'
+                    });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ!',
+                        text: '@TempData["ErrorMessage"]',
+                        confirmButtonText: 'حسناً'
+                    });
+            </text>
+        }
+    </script>
+}

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ComplaintSystem.Models.User>
+@{
+    ViewData["Title"] = "إدارة المستخدمين";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+    <div class="text-end mb-3">
+        <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
+            <i class="bi bi-plus-circle-fill me-1"></i> إضافة مستخدم
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded bg-white p-3">
+        <table class="table table-bordered text-center align-middle table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>الاسم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>الدور</th>
+                    <th>القسم</th>
+                    <th style="width: 180px;">الخيارات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-muted">لا يوجد مستخدمون.</td>
+                    </tr>
+                }
+                else
+                {
+                    int i = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr id="row-@item.UserId">
+                            <td>@(i++)</td>
+                            <td>@item.Name</td>
+                            <td>@item.Email</td>
+                            <td>@item.Role?.Name</td>
+                            <td>@item.Department?.Name</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-outline-warning me-1">
+                                    <i class="bi bi-pencil-square"></i> تعديل
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@item.UserId, '@item.Name')">
+                                    <i class="bi bi-trash"></i> حذف
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(userId, userName) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: `سيتم حذف المستخدم: ${userName}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، احذفه',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Users/Delete',
+                        type: 'POST',
+                        data: { id: userId },
+                        success: function (res) {
+                            if (res.success) {
+                                $('#row-' + userId).fadeOut();
+                                Swal.fire({
+                                    title: 'تم الحذف!',
+                                    text: 'تم حذف المستخدم بنجاح.',
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('خطأ', 'حدث خطأ أثناء الحذف.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

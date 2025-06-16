@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Assignment>
+@{
+    ViewData["Title"] = "الشكاوى المحولة";
+    Layout = "~/Areas/Specialist/Views/Shared/SpecialistLayout.cshtml";
+}
+
+<h2 class="mb-4">الشكاوى المحولة إليك</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        لا توجد شكاوى محولة حالياً.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-success text-center">
+                <tr>
+                    <th>رقم الشكوى</th>
+                    <th>اسم المواطن</th>
+                    <th>نوع الشكوى</th>
+                    <th>تاريخ التحويل</th>
+                    <th>الحالة</th>
+                    <th>ملاحظات التحويل</th>
+                    <th>التحويل من</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Complaint.ComplaintNumber</td>
+                        <td>@item.Complaint.CitizenName</td>
+                        <td>@item.Complaint.ComplaintType?.Name</td>
+                        <td>@item.AssignedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                        <td><span class="badge bg-warning text-dark">@item.Complaint.Status?.Name</span></td>
+                        <td>@item.Notes</td>
+                        <td>@item.FromUser?.Name</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ComplaintId" class="btn btn-sm btn-primary">تفاصيل</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <!-- SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // عرض رسالة عند وجود TempData
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم بنجاح',
+                        text: '@TempData["Success"]',
+                        confirmButtonText: 'حسناً'
+                    });
+            </text>
+        }
+        else if (TempData["Error"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: '@TempData["Error"]',
+                        confirmButtonText: 'موافق'
+                    });
+            </text>
+        }
+    </script>
+}
+

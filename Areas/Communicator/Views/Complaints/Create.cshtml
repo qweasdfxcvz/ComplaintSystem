@@ -1,0 +1,99 @@
+﻿@model ComplaintSystem.ViewModels.CreateComplaintViewModel
+@{
+    ViewData["Title"] = "إضافة شكوى جديدة";
+    Layout = "~/Areas/Communicator/Views/Shared/CommunicatorLayout.cshtml";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet" />
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">إضافة شكوى جديدة</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CitizenName" class="form-label"></label>
+                <input asp-for="CitizenName" class="form-control" />
+                <span asp-validation-for="CitizenName" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="NationalId" class="form-label"></label>
+                <input asp-for="NationalId" class="form-control" />
+                <span asp-validation-for="NationalId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TransactionNo" class="form-label"></label>
+                <input asp-for="TransactionNo" class="form-control" />
+                <span asp-validation-for="TransactionNo" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ComplaintTypeId" class="form-label">نوع الشكوى</label>
+                <select asp-for="ComplaintTypeId" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.ComplaintTypes, "ComplaintTypeId", "Name"))">
+                    <option value="">-- اختر نوع الشكوى --</option>
+                </select>
+                <span asp-validation-for="ComplaintTypeId" class="text-danger"></span>
+            </div>
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ToUserId" class="form-label">الموظف المختص</label>
+                <select asp-for="ToUserId" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Employees, "UserId", "Name"))">
+                    <option value="">-- اختر الموظف --</option>
+                </select>
+                <span asp-validation-for="ToUserId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Notes" class="form-label">ملاحظات</label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-primary px-5">حفظ الشكوى</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الحفظ',
+                text: 'تمت إضافة الشكوى وتحويلها بنجاح.'
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: 'حدث خطأ أثناء حفظ الشكوى'
+            });
+        </script>
+    }
+}

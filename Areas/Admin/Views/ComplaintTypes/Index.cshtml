@@ -1,0 +1,91 @@
+﻿@model IEnumerable<ComplaintSystem.Models.ComplaintType>
+@{
+    ViewData["Title"] = "أنواع الشكاوى";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+<h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+<div class="text-end mb-3">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> إضافة نوع جديد
+    </a>
+</div>
+
+<table class="table table-bordered table-striped text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>الرقم</th>
+            <th>اسم النوع</th>
+            <th>الخيارات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="3" class="text-muted">لا توجد أنواع مضافة بعد.</td>
+            </tr>
+        }
+        else
+        {
+            int i = 1;
+            foreach (var item in Model)
+            {
+                <tr id="typeRow-@item.ComplaintTypeId">
+                    <td>@(i++)</td>
+                    <td>@item.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ComplaintTypeId" class="btn btn-sm btn-warning me-1">
+                            <i class="bi bi-pencil-square"></i> تعديل
+                        </a>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDelete(@item.ComplaintTypeId, '@item.Name')">
+                            <i class="bi bi-trash"></i> حذف
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(typeId, typeName) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: `سيتم حذف النوع: ${typeName}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، احذفه',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/ComplaintTypes/Delete',
+                        type: 'POST',
+                        data: { id: typeId },
+                        success: function (res) {
+                            if (res.success) {
+                                $('#typeRow-' + typeId).fadeOut();
+                                Swal.fire({
+                                    title: 'تم الحذف!',
+                                    text: 'تم حذف النوع بنجاح.',
+                                    icon: 'success',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('خطأ', 'حدث خطأ أثناء الحذف.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
