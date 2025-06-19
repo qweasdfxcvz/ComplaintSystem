@@ -9,17 +9,17 @@
 <form asp-action="Edit" class="col-md-6 mx-auto">
     <input type="hidden" asp-for="DepartmentId" />
     <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
+        <label asp-for="Name" class="form-label">اسم القسم</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="ContactPhone" class="form-label"></label>
+        <label asp-for="ContactPhone" class="form-label">رقم الهاتف</label>
         <input asp-for="ContactPhone" class="form-control" />
         <span asp-validation-for="ContactPhone" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
+        <label asp-for="Email" class="form-label">البري الإلكتروني</label>
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>

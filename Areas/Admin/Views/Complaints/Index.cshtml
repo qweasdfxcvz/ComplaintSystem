@@ -8,7 +8,7 @@
     var delayed = Context.Request.Query["delayed"].ToString();
 }
 
-<h2 class="mb-4">الشكاوى</h2>
+<h2 class="text-center mb-4">@ViewData["Title"]</h2>
 
 <form method="get" class="row g-2 mb-4">
     <div class="col-md-3">
@@ -19,8 +19,7 @@
             <option value="">كل الحالات</option>
             @foreach (var status in ViewBag.Statuses as List<ComplaintSystem.Models.ComplaintStatus>)
             {
-                <option value="@status.StatusId"
-                        selected="@(statusId == status.StatusId.ToString() ? "selected" : null)">
+                <option value="@status.StatusId" selected="@(statusId == status.StatusId.ToString() ? "selected" : null)">
                     @status.Name
                 </option>
             }
@@ -30,7 +29,7 @@
         <select name="days" class="form-select">
             <option value="">كل الأوقات</option>
             <option value="1" selected="@(days == "1" ? "selected" : null)">آخر 24 ساعة</option>
-            <option value="3" selected="@(days == "3" ? "selected" : null)" )>آخر 3 أيام</option>
+            <option value="3" selected="@(days == "3" ? "selected" : null)">آخر 3 أيام</option>
             <option value="7" selected="@(days == "7" ? "selected" : null)">آخر أسبوع</option>
         </select>
     </div>
@@ -41,61 +40,60 @@
         </div>
     </div>
     <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">تصفية</button>
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-funnel"></i> تصفية
+        </button>
     </div>
 </form>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">لا توجد شكاوى مطابقة لخيارات الفلترة.</div>
+    <div class="alert alert-info text-center">لا توجد شكاوى مطابقة لخيارات الفلترة.</div>
 }
 else
 {
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>رقم الشكوى</th>
-                <th>اسم المواطن</th>
-                <th>الرقم الوطني</th>
-                <th>رقم المعاملة</th>
-                <th>الحالة</th>
-                <th>نوع الشكوى</th>
-                <th>تاريخ الإرسال</th>
-                <th>متأخرة؟</th>
-                <th>خيارات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var complaint in Model)
-            {
-                var isDelayed = complaint.StatusId != 5 && (DateTime.Now - complaint.CreatedAt).TotalHours > 48;
+    <div class="list-group">
+        @foreach (var complaint in Model)
+        {
+            var isDelayed = complaint.StatusId != 5 && (DateTime.Now - complaint.CreatedAt).TotalHours > 48;
 
-                <tr>
-                    <td>@complaint.ComplaintNumber</td>
-                    <td>@complaint.CitizenName</td>
-                    <td>@complaint.NationalId</td>
-                    <td>@complaint.TransactionNo</td>
-                    <td>@complaint.Status?.Name</td>
-                    <td>@complaint.ComplaintType?.Name</td>
-                    <td>@complaint.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>
-                        @if (isDelayed)
-                        {
-                            <span class="badge bg-danger">نعم</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-success">لا</span>
-                        }
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-info" asp-area="Admin" asp-controller="Complaints" asp-action="Details" asp-route-id="@complaint.ComplaintId">
-                            عرض التفاصيل
+            <div class="list-group-item list-group-item-action border-start-5 border-@((isDelayed ? "danger" : "success")) shadow-sm mb-2 rounded-3">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1">
+                        <i class="bi bi-hash text-primary"></i> @complaint.ComplaintNumber
+                    </h5>
+                    <small class="text-muted">
+                        <i class="bi bi-clock"></i> @complaint.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                    </small>
+                </div>
+
+                <p class="mb-1">
+                    <i class="bi bi-person-fill text-secondary"></i> <strong>@complaint.CitizenName</strong> |
+                    <i class="bi bi-credit-card-2-front-fill"></i> @complaint.NationalId |
+                    <i class="bi bi-file-earmark-text"></i> @complaint.TransactionNo
+                </p>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="badge bg-@(isDelayed ? "danger" : "success")">
+                            <i class="bi bi-exclamation-circle"></i> @(isDelayed ? "متأخرة" : "في الوقت")
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="badge bg-dark">
+                            <i class="bi bi-info-circle"></i> @complaint.Status?.Name
+                        </span>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a class="btn btn-sm btn-outline-primary" asp-area="Admin" asp-controller="Complaints" asp-action="Details" asp-route-id="@complaint.ComplaintId">
+                            <i class="bi bi-eye-fill"></i> عرض التفاصيل
                         </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
 }
 

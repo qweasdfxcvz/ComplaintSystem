@@ -14,27 +14,27 @@
     <form asp-action="Create" method="post">
         <div class="row g-3">
             <div class="col-md-6">
-                <label asp-for="CitizenName" class="form-label"></label>
+                <label asp-for="CitizenName" class="form-label">اسم المواطن الثلاثي</label>
                 <input asp-for="CitizenName" class="form-control" />
                 <span asp-validation-for="CitizenName" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="NationalId" class="form-label"></label>
+                <label asp-for="NationalId" class="form-label">الرقم الوطني</label>
                 <input asp-for="NationalId" class="form-control" />
                 <span asp-validation-for="NationalId" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="Phone" class="form-label"></label>
+                <label asp-for="Phone" class="form-label">رقم الموبايل</label>
                 <input asp-for="Phone" class="form-control" />
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="Email" class="form-label"></label>
+                <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="TransactionNo" class="form-label"></label>
+                <label asp-for="TransactionNo" class="form-label">رقم المعاملة</label>
                 <input asp-for="TransactionNo" class="form-control" />
                 <span asp-validation-for="TransactionNo" class="text-danger"></span>
             </div>
@@ -47,7 +47,7 @@
                 <span asp-validation-for="ComplaintTypeId" class="text-danger"></span>
             </div>
             <div class="col-md-12">
-                <label asp-for="Description" class="form-label"></label>
+                <label asp-for="Description" class="form-label">توصيف المشكلة</label>
                 <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
@@ -60,7 +60,7 @@
                 <span asp-validation-for="ToUserId" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="Notes" class="form-label">ملاحظات</label>
+                <label asp-for="Notes" class="form-label"> ملاحظات للموظف المختص</label>
                 <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
             </div>
         </div>

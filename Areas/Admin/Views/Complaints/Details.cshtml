@@ -1,0 +1,88 @@
+﻿@model ComplaintSystem.Models.Complaint
+
+@{
+    ViewData["Title"] = "تفاصيل الشكوى";
+    Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
+}
+
+<h2>تفاصيل الشكوى</h2>
+
+<div class="container mt-4">
+    <div class="card shadow-sm rounded-4 border-start border-4 border-primary">
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4><i class="bi bi-file-earmark-text-fill"></i> تفاصيل الشكوى</h4>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-hash"></i> رقم الشكوى:</label>
+                    <div>@Model.ComplaintNumber</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-person-fill"></i> اسم المواطن:</label>
+                    <div>@Model.CitizenName</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-credit-card-2-front"></i> الرقم الوطني:</label>
+                    <div>@Model.NationalId</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-info-circle"></i> نوع المشكلة:</label>
+                    <div>@Model.ComplaintType?.Name</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-exclamation-circle"></i> حالة الشكوى:</label>
+                    <div>@Model.Status?.Name</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold"><i class="bi bi-clock-fill"></i> تاريخ الإنشاء:</label>
+                    <div>@Model.CreatedAt.ToString("yyyy/MM/dd HH:mm")</div>
+                </div>
+                <div class="col-12">
+                    <label class="fw-bold"><i class="bi bi-chat-left-text"></i> توصيف المشكلة:</label>
+                    <div class="alert alert-secondary">@Model.Description</div>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+            <h5 class="mb-3"><i class="bi bi-share-fill"></i> التحويلات المرتبطة</h5>
+
+            @if (Model.Assignments != null && Model.Assignments.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered rounded-3 overflow-hidden">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-person-fill-up"></i> من الموظف</th>
+                                <th><i class="bi bi-person-fill-down"></i> إلى الموظف</th>
+                                <th><i class="bi bi-calendar-date"></i> تاريخ التحويل</th>
+                                <th><i class="bi bi-sticky"></i> ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var assignment in Model.Assignments)
+                            {
+                                <tr>
+                                    <td>@assignment.FromUser?.Name</td>
+                                    <td>@assignment.ToUser?.Name</td>
+                                    <td>@assignment.AssignedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                                    <td>@assignment.Notes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">لا توجد تحويلات لهذه الشكوى.</div>
+            }
+
+            <div class="text-end mt-4">
+                <a asp-area="Admin" asp-controller="Complaints" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-bar-right"></i> العودة إلى قائمة الشكاوى
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -51,5 +51,23 @@ namespace ComplaintSystem.Areas.Admin.Controllers
 
             return View(complaints);
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var complaint = await _context.Complaints
+                .Include(c => c.ComplaintType)
+                .Include(c => c.Status)
+                .Include(c => c.Assignments)
+                    .ThenInclude(a => a.FromUser)
+                .Include(c => c.Assignments)
+                    .ThenInclude(a => a.ToUser)
+                .FirstOrDefaultAsync(c => c.ComplaintId == id);
+
+            if (complaint == null)
+                return NotFound();
+
+            return View(complaint);
+        }
+
     }
 }

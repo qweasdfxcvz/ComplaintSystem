@@ -12,7 +12,7 @@
             <input type="hidden" asp-for="UserId" />
 
             <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
+                <label asp-for="Name" class="form-label">اسم الموظف</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-person"></i></span>
                     <input asp-for="Name" class="form-control" />
@@ -21,7 +21,7 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
+                <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                     <input asp-for="Email" class="form-control" />
@@ -30,7 +30,7 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="PasswordHash" class="form-label"></label>
+                <label asp-for="PasswordHash" class="form-label">كلمة المرور</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
                     <input asp-for="PasswordHash" type="password" class="form-control" />
@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="RoleId" class="form-label"></label>
+                <label asp-for="RoleId" class="form-label">الصلاحية</label>
                 <select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId">
                     <option value="">-- اختر الدور --</option>
                 </select>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="DepartmentId" class="form-label"></label>
+                <label asp-for="DepartmentId" class="form-label">القسم</label>
                 <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.DepartmentId">
                     <option value="">-- اختر القسم --</option>
                 </select>
